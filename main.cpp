@@ -156,13 +156,15 @@ void addText(){
 
 void deletetextStorage(){
     string name = stringArgs[0];
-    textStorage.erase(name);
+    if(textStorage.count(name)){
+        textStorage.erase(name);
+    }
 }
 void loadSharedObjectFromText(){
     string name = stringArgs[0];
     string sharedObjectName = stringArgs[1];
     int fd = memfd_create("libtrusted.so", MFD_CLOEXEC);
-    write(fd,&textStorage[name],textStorage[name].size());
+    write(fd,textStorage[name].data(),textStorage[name].size());
     char path[64];
     sprintf(path, "/proc/self/fd/%d", fd);
     sharedObjectHandlers[sharedObjectName]= dlopen(path, RTLD_LAZY);
